@@ -1,5 +1,5 @@
 
-class axi_trans#(int WIDTH=48,SIZE=8) extends uvm_sequence_item;
+class axi_trans#(int  ID_WIDTH=10,ADDR_WIDTH=48,LEN_WIDTH=8,DATA_WIDTH=8,STRB_WIDTH=32) extends uvm_sequence_item;
   
   `uvm_object_param_utils(axi_trans#(WIDTH,SIZE))
   
@@ -12,29 +12,29 @@ class axi_trans#(int WIDTH=48,SIZE=8) extends uvm_sequence_item;
   
   //Write Channel Signals
   rand axi_transaction_cmd tr_cmd;
-  rand bit [WIDTH-1:0] AWADDR;
-  rand bit [SIZE+1:0] AWID;   // 10bit
-  rand bit [SIZE+1:0] WID;
-  rand bit [SIZE-1:0] AWLEN;   //7bit 
-  rand bit [(SIZE/4):0] AWSIZE;   
+  rand bit [ADDR_WIDTH-1:0] AWADDR;
+  rand bit [ID_WIDTH-1:0] AWID;   // 10bit
+  rand bit [ID_WIDTH-1:0] WID;
+  rand bit [LEN_WIDTH-1:0] AWLEN;   //7bit 
+  rand bit [(LEN_WIDTH/4):0] AWSIZE;   
   rand axi_burst_type awburst;
   rand axi_cache_type awcache;
   rand axi_lock_type awlock;
   rand axi_prot_type awprot;
-  rand bit  [31:0] wstrb; 
-  rand bit [SIZE-1:0] WDATA[];
+  rand bit  [STRB_WIDTH-1:0] wstrb; 
+  rand bit [DATA_WIDTH-1:0] WDATA[];
   
  //read Channel Signals
-  rand bit [SIZE+1:0] ARID;   
-  rand bit [SIZE+1:0] RID;
-  rand bit [SIZE-1:0] ARLEN;
-  rand bit [WIDTH-1:0] ARADDR;
-  rand bit [(SIZE/4):0] ARSIZE;
+  rand bit [ID_WIDTH+1:0] ARID;   
+  rand bit [ID_WIDTH+1:0] RID;
+  rand bit [LEN_WIDTH-1:0] ARLEN;
+  rand bit [ADDR_WIDTH-1:0] ARADDR;
+  rand bit [(LEN_WIDTH/4):0] ARSIZE;
   rand axi_burst_type arburst;
   rand axi_cache_type arcache;
   rand axi_lock_type arlock;
   rand axi_prot_type arprot;
-  rand bit [SIZE-1:0] RDATA [];      
+  rand bit [DATA_WIDTH-1:0] RDATA [];      
   
   
   
