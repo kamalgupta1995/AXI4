@@ -12,13 +12,13 @@ class axi_slave_driver extends uvm_driver#(axi_trans);
 
     // Memory and address variables
     reg [(AXI_DATA_WIDTH/8)-1:0] slv_mem [int]; 
-    bit [47:0] wr_address;  // 48-bit address for write
+    bit [47:0] wr_address;  // 48-bit address for write     
     bit [47:0] rd_address;  // 48-bit address for read
     reg [AXI_DATA_WIDTH-1:0] mem_data_out;
 
     int addr;
     int brstcnt;
-    bit [255:0] wr_data[];
+    bit [255:0] wr_data[]; 
     bit [255:0] rd_data[];
     bit resp_okay;
     
@@ -69,7 +69,8 @@ class axi_slave_driver extends uvm_driver#(axi_trans);
       end
       
       fork
-      	if(axi_vif.AXI_AWVALID) begin 
+      	
+       if(axi_vif.AXI_AWVALID) begin 
           sample_write_address(axi_xfer);
           sample_write_data(axi_xfer);
           send_write_response(axi_xfer);
@@ -133,7 +134,8 @@ class axi_slave_driver extends uvm_driver#(axi_trans);
              else
                resp_okay=0;
              end 
-	   end
+	
+   end
           end
 
       end
@@ -160,7 +162,8 @@ class axi_slave_driver extends uvm_driver#(axi_trans);
              end 
              else
                resp_okay=0;
-	   end
+	
+   end
           end
 
 	   // Increment the base address after each burst
@@ -169,16 +172,12 @@ class axi_slave_driver extends uvm_driver#(axi_trans);
       end
 
 
- 
- 
-     /* // Wait for AXI_WREADY to be asserted
-      if (axi_vif.AXI_WREADY && axi_vif.AXI_WVALID) begin
+   else if(AXI_AWBURST==2'b10) begin //WRAP Burst
+
         for (int i = 0; i < brstcnt; i++) begin
           @(posedge axi_vif.AXI_ACLK);
           axi_vif.AXI_WID   = axi_xfer.id;
           axi_vif.AXI_WLAST = (i == brstcnt-1) ? 1 : 0;
-    
-          // Write data 
           for (int wr_byte_index = 0; wr_byte_index < (AXI_DATA_WIDTH/8); wr_byte_index = wr_byte_index + 1) begin
             if (axi_vif.AXI_WSTRB[wr_byte_index]) begin
               data_in = axi_vif.AXI_WDATA[(wr_byte_index*8 + 7) -: 8];
@@ -190,13 +189,33 @@ class axi_slave_driver extends uvm_driver#(axi_trans);
              if (write_addr >= min_addr && write_addr <= max_addr) begin
 	      slv_mem[write_addr] = data_in;
              `uvm_info("WR_DATA", $sformatf("AXI_SLV_DRV: AXI_WSTRB[%0h] = %0h, slv_mem[%0h] = %0h", wr_byte_index, axi_vif.AXI_WSTRB[wr_byte_index], write_addr, slv_mem[write_addr]), UVM_LOW)
+               resp_okay=1;
              end 
-	   end
+             else
+               resp_okay=0;
+	
+   end
           end
+
 	   // Increment the base address after each burst
+           //wr_address = wr_address + (AXI_DATA_WIDTH/8);
+
+
+        // Increment the base address after each burst and wrap back when wrap address is reached
+           wrap_boundary= int(wr_address/axi_vif.AXI_LENGTH*(2**AXI_SIZE))*axi_vif.AXI_LENGTH*(2**axi_vif.AXI_SIZE);
+           address_N= wrap_boundary + axi_vif.AXI_LENGTH*(2**axi_vif.AXI_SIZE);
            wr_address = wr_address + (AXI_DATA_WIDTH/8);
+           if(wr_address==wrap_boundary)
+              wr_address= address_N;
+           else 
+                wr_address = wr_address + (AXI_DATA_WIDTH/8);
+
+
         end
-      end */
+      end
+ 
+ 
+     
     endtask
   
 
@@ -217,7 +236,7 @@ class axi_slave_driver extends uvm_driver#(axi_trans);
           axi_vif.AXI_BVALID = 1'b0;
      end
 
-     else begin
+     else if(!resp_okay)begin
           axi_vif.AXI_BID = axi_xfer.id;
           axi_vif.AXI_BRESP = 2'b10;
           axi_vif.AXI_BVALID = 1'b1;
@@ -225,7 +244,18 @@ class axi_slave_driver extends uvm_driver#(axi_trans);
           axi_vif.AXI_BVALID = 1'b0;
      end
      
+    else if(axi_vif.AXI_AWLOCK)begin
+          axi_vif.AXI_BID = axi_xfer.id;
+          axi_vif.AXI_BRESP = 2'b01;     //Give Ex access response for AWLOCK transactions
+          axi_vif.AXI_BVALID = 1'b1;
+          @(posedge axi_vif.AXI_ACLK)
+          axi_vif.AXI_BVALID = 1'b0;
+     end
           
+
+
+
+
     endtask
 
     //-----------------------------------------------------------
@@ -291,4 +321,3 @@ class axi_slave_driver extends uvm_driver#(axi_trans);
 endtask
 
  endclass //axi_slave_driver
-
