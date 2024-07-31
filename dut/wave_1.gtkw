@@ -1,0 +1,73 @@
+[*]
+[*] GTKWave Analyzer v3.3.118 (w)1999-2023 BSI
+[*] Mon Jul 15 07:07:30 2024
+[*]
+[dumpfile] "/proj/armdata/ishan.s/axi4_dut/axi4_dut_tb.vcd"
+[dumpfile_mtime] "Thu Jul 11 21:34:48 2024"
+[dumpfile_size] 87033
+[savefile] "/proj/armdata/ishan.s/axi4_dut/wave_1.gtkw"
+[timestart] 0
+[size] 1024 665
+[pos] -1 -1
+*-16.686684 26800 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] axi4_dut_tb.
+[sst_width] 229
+[signals_width] 182
+[sst_expanded] 1
+[sst_vpaned_height] 162
+@28
+axi4_dut_tb.ACLK
+axi4_dut_tb.ARESETn
+axi4_dut_tb.MEM_AWREADY
+axi4_dut_tb.MEM_AWVALID
+@22
+axi4_dut_tb.MEM_AWID[3:0]
+axi4_dut_tb.MEM_AWADDR[31:0]
+@28
+axi4_dut_tb.MEM_AWBURST[1:0]
+@22
+axi4_dut_tb.MEM_AWLEN[7:0]
+@28
+axi4_dut_tb.MEM_AWSIZE[2:0]
+axi4_dut_tb.MEM_WREADY
+axi4_dut_tb.MEM_WVALID
+@22
+axi4_dut_tb.MEM_WDATA[31:0]
+@28
+axi4_dut_tb.MEM_WLAST
+@22
+axi4_dut_tb.MEM_WSTRB[3:0]
+@28
+axi4_dut_tb.ACLK
+axi4_dut_tb.ARESETn
+axi4_dut_tb.MEM_BREADY
+axi4_dut_tb.MEM_BVALID
+@22
+axi4_dut_tb.MEM_BID[3:0]
+@28
+axi4_dut_tb.MEM_BRESP[1:0]
+axi4_dut_tb.MEM_ARREADY
+axi4_dut_tb.MEM_ARVALID
+@22
+axi4_dut_tb.MEM_ARID[3:0]
+axi4_dut_tb.MEM_ARADDR[31:0]
+@28
+axi4_dut_tb.MEM_ARBURST[1:0]
+@22
+axi4_dut_tb.MEM_ARLEN[7:0]
+@28
+axi4_dut_tb.MEM_ARSIZE[2:0]
+axi4_dut_tb.ACLK
+axi4_dut_tb.ARESETn
+@29
+axi4_dut_tb.MEM_RREADY
+@28
+axi4_dut_tb.MEM_RVALID
+@22
+axi4_dut_tb.MEM_RID[3:0]
+axi4_dut_tb.MEM_RDATA[31:0]
+@28
+axi4_dut_tb.MEM_RLAST
+axi4_dut_tb.MEM_RRESP[1:0]
+[pattern_trace] 1
+[pattern_trace] 0
