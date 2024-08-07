@@ -15,7 +15,7 @@ typedef enum bit[1:0]
     AXI_BURST_FIXED = 2'h0,  // FIXED
     AXI_BURST_INCR  = 2'h1,  // INCR
     AXI_BURST_WRAP  = 2'h2   // WRAP
-} axi_wburst_type; 
+} axi_burst_type; 
 
 typedef enum bit[1:0]
 {
