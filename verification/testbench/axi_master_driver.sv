@@ -80,10 +80,10 @@ class axi_master_driver extends uvm_driver#(axi_trans);
 
     //------------------------------------------------
     task transfer_write_addr(axi_trans axi_xfer);
-         axi_vif.AXI_AWID     = axi_xfer.id;
-         axi_vif.AXI_AWADDR   = axi_xfer.addr;
-         axi_vif.AXI_AWLEN    = axi_xfer.len;
-         axi_vif.AXI_AWSIZE   = axi_xfer.size;
+         axi_vif.AXI_AWID     = axi_xfer.AWID;
+         axi_vif.AXI_AWADDR   = axi_xfer.AWADDR;
+         axi_vif.AXI_AWLEN    = axi_xfer.AWLEN;
+         axi_vif.AXI_AWSIZE   = axi_xfer.AWSIZE;
          axi_vif.AXI_AWBURST  = 1'h1; //incrementing address burst
          axi_vif.AXI_AWLOCK   = 2'h0; //normal access
          axi_vif.AXI_AWCACHE  = 4'h0; 
@@ -112,7 +112,7 @@ class axi_master_driver extends uvm_driver#(axi_trans);
      int total_bytes;
 
      axi_vif.AXI_WSTRB = axi_xfer.wstrb;
-     brstcnt = axi_xfer.len + 1;
+     brstcnt = axi_xfer.AWLEN + 1;
      wr_data = new[brstcnt];
 
  
@@ -131,14 +131,14 @@ class axi_master_driver extends uvm_driver#(axi_trans);
      end*/
 
      
-     for(int i=0; i< axi_xfer.len+1; i++) begin
+     for(int i=0; i< axi_xfer.AWLEN+1; i++) begin
        `uvm_info("WR_DATA",$sformatf(" Data[%0d] = %0h",i,wr_data[i]),UVM_LOW)
        @(posedge axi_vif.AXI_ACLK) begin
         wait (axi_vif.AXI_WREADY);
-         axi_vif.AXI_WDATA = axi_xfer.wr_data[i]; //wdata[size] expecting it to come from sequencce transaction 
-        axi_vif.AXI_WLAST = (i == axi_xfer.len)? 1:0;
+         axi_vif.AXI_WDATA = axi_xfer.WDATA[i]; //wdata[size] expecting it to come from sequencce transaction 
+        axi_vif.AXI_WLAST = (i == axi_xfer.AWLEN)? 1:0;
        	axi_vif.AXI_WVALID= 1'b1;
-        axi_vif.AXI_WID   = axi_xfer.id; 
+        axi_vif.AXI_WID   = axi_xfer.WID; 
        end  
        
      end
@@ -183,10 +183,10 @@ class axi_master_driver extends uvm_driver#(axi_trans);
 	 // send AXI_ARVALID to slave
 	 axi_vif.AXI_ARVALID  = 1'b1;
 
-         axi_vif.AXI_ARID     = axi_xfer.id;
-         axi_vif.AXI_ARADDR   = axi_xfer.addr;
-         axi_vif.AXI_ARLEN    = axi_xfer.len;
-         axi_vif.AXI_ARSIZE   = axi_xfer.size;
+         axi_vif.AXI_ARID     = axi_xfer.ARID;
+         axi_vif.AXI_ARADDR   = axi_xfer.ARADDR;
+         axi_vif.AXI_ARLEN    = axi_xfer.ARLEN;
+         axi_vif.AXI_ARSIZE   = axi_xfer.ARSIZE;
          axi_vif.AXI_ARBURST  = 2'h1; //incrementing address burst
          axi_vif.AXI_ARLOCK   = 2'h0; //normal access
          axi_vif.AXI_ARCACHE  = 4'h0; 
@@ -213,4 +213,5 @@ class axi_master_driver extends uvm_driver#(axi_trans);
    
    
 endclass //axi_master_driver
+
 
