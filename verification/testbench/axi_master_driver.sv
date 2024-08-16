@@ -27,8 +27,21 @@ class axi_master_driver extends uvm_driver#(axi_trans);
     endfunction //new
 
     function void build_phase(uvm_phase phase);
+      //if(! uvm_config_db#(virtual axi_if#(ID_WIDTH,ADDR_WIDTH,LEN_WIDTH,DATA_WIDTH,STRB_WIDTH))::get(this, "", "axi_vif", axi_vif)) 
+      if(! uvm_config_db#(virtual axi_if)::get(this, "", "axi_vif", axi_vif)) 
+        `uvm_fatal("AXI_MASTR_DRV", "Cannot get VIF from configuration database!")
         super.build_phase(phase);
     endfunction //build_phase
+  	//CONFIG_DB was missing
+//       function void build_phase(uvm_phase phase);
+//           axi_xfer = axi_trans::type_id::create("axi_xfer");  
+
+//          if(! uvm_config_db#(virtual axi_if#(ID_WIDTH,ADDR_WIDTH,LEN_WIDTH,DATA_WIDTH,STRB_WIDTH))::get(this, "", "axi_vif", axi_vif)) begin
+//               `uvm_fatal("AXI_SLV_DRV", "Cannot get VIF from configuration database!")
+//          end
+//          super.build_phase(phase);
+
+//       endfunction //build_phase
 
     //-------------------------------------
     task run_phase(uvm_phase phase);
@@ -44,14 +57,19 @@ class axi_master_driver extends uvm_driver#(axi_trans);
        end
     endtask //run_phase
 
-    //--------------------------------------------------
+    //------------------------------------------------
     task drive_transaction(axi_trans axi_xfer);
-      //reset_axi_write_addr();
-      //reset_axi_write_data();
+      reset_axi_write_addr();
+      reset_axi_write_data();
+      reset_axi_read_addr();
+
       axi_vif.AXI_BREADY = 1'b0;
            
       // wait for reset
+            
+        @(posedge axi_vif.AXI_ACLK);
       wait (axi_vif.AXI_ARESETn);
+      
       
       case(axi_xfer.tr_cmd)
          AXI_WRITE : begin
@@ -80,6 +98,7 @@ class axi_master_driver extends uvm_driver#(axi_trans);
 
     //------------------------------------------------
     task transfer_write_addr(axi_trans axi_xfer);
+       @(posedge axi_vif.AXI_ACLK);
          axi_vif.AXI_AWID     = axi_xfer.AWID;
          axi_vif.AXI_AWADDR   = axi_xfer.AWADDR;
          axi_vif.AXI_AWLEN    = axi_xfer.AWLEN;
@@ -129,14 +148,14 @@ class axi_master_driver extends uvm_driver#(axi_trans);
         wait (axi_vif.AXI_WREADY);
 	@(posedge axi_vif.AXI_ACLK);
      end*/
-
+     $display("daata==%0p",axi_xfer.WDATA);
      
      for(int i=0; i< axi_xfer.AWLEN+1; i++) begin
-       `uvm_info("WR_DATA",$sformatf(" Data[%0d] = %0h",i,wr_data[i]),UVM_LOW)
+       `uvm_info("WR_DATA",$sformatf(" Data[%0h] = %0p",i,wr_data[i]),UVM_LOW)
        @(posedge axi_vif.AXI_ACLK) begin
         wait (axi_vif.AXI_WREADY);
          axi_vif.AXI_WDATA = axi_xfer.WDATA[i]; //wdata[size] expecting it to come from sequencce transaction 
-        axi_vif.AXI_WLAST = (i == axi_xfer.AWLEN)? 1:0;
+         axi_vif.AXI_WLAST = (i == axi_xfer.AWLEN)? 1:0;
        	axi_vif.AXI_WVALID= 1'b1;
         axi_vif.AXI_WID   = axi_xfer.WID; 
        end  
@@ -145,7 +164,9 @@ class axi_master_driver extends uvm_driver#(axi_trans);
      
      
      // Set WVALID to 0
+     @(posedge axi_vif.AXI_ACLK)
      axi_vif.AXI_WVALID = 1'b0;
+     axi_vif.AXI_WLAST =1'b0;
 
    endtask 
 
