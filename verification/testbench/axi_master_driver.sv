@@ -15,6 +15,7 @@ class axi_master_driver extends uvm_driver#(axi_trans);
     bit [255:0] wr_data[];
     logic[1:0] bresp;
     logic[3:0] bid;
+  int count;
 
     //-------------------------------------------------
     // Methods
@@ -51,24 +52,42 @@ class axi_master_driver extends uvm_driver#(axi_trans);
         req.print();
     	$cast(rsp, req.clone());
         rsp.set_id_info(req);
-        drive_transaction(req);
-
+         
+         wait(axi_vif.AXI_ARESETn == 0)
+         //  @( axi_vif.AXI_ACLK) ;
+           fork  
+              reset_axi_write_addr();
+              reset_axi_write_data();
+              reset_axi_read_addr();
+              axi_vif.AXI_BREADY = 1'b0;
+           join
+            wait (axi_vif.AXI_ARESETn);
+           begin
+             drive_transaction(req);
+           end
         seq_item_port.item_done();
        end
     endtask //run_phase
 
     //------------------------------------------------
     task drive_transaction(axi_trans axi_xfer);
-      reset_axi_write_addr();
-      reset_axi_write_data();
-      reset_axi_read_addr();
+       
+//       if (axi_vif.AXI_ARESETn == 0) 
+//         @( posedge axi_vif.AXI_ACLK) ;
+//         fork
+//           $display("inside reset fork block");
 
-      axi_vif.AXI_BREADY = 1'b0;
-           
+//           reset_axi_write_addr();
+//           reset_axi_write_data();
+//           reset_axi_read_addr();
+//           axi_vif.AXI_BREADY = 1'b0;
+//         join
+     
+ 
       // wait for reset
             
         @(posedge axi_vif.AXI_ACLK);
-      wait (axi_vif.AXI_ARESETn);
+    //  wait (axi_vif.AXI_ARESETn);
       
       
       case(axi_xfer.tr_cmd)
@@ -103,7 +122,7 @@ class axi_master_driver extends uvm_driver#(axi_trans);
          axi_vif.AXI_AWADDR   = axi_xfer.AWADDR;
          axi_vif.AXI_AWLEN    = axi_xfer.AWLEN;
          axi_vif.AXI_AWSIZE   = axi_xfer.AWSIZE;
-         axi_vif.AXI_AWBURST  = 1'h1; //incrementing address burst
+         axi_vif.AXI_AWBURST  = axi_xfer.awburst; //incrementing address burst
          axi_vif.AXI_AWLOCK   = 2'h0; //normal access
          axi_vif.AXI_AWCACHE  = 4'h0; 
          axi_vif.AXI_AWPROT   = 3'h2; //normal, non-secure data access
@@ -148,10 +167,14 @@ class axi_master_driver extends uvm_driver#(axi_trans);
         wait (axi_vif.AXI_WREADY);
 	@(posedge axi_vif.AXI_ACLK);
      end*/
-     $display("daata==%0p",axi_xfer.WDATA);
+     //$display("daata==%0p",axi_xfer.WDATA);
+     //$display(" awlength=%0d",axi_xfer.AWLEN);
+     //$display(" AWBURST=%0s ",axi_xfer.awburst.name());   
      
      for(int i=0; i< axi_xfer.AWLEN+1; i++) begin
        `uvm_info("WR_DATA",$sformatf(" Data[%0h] = %0p",i,wr_data[i]),UVM_LOW)
+       count=count+1;
+       $display("count==%0d",count);
        @(posedge axi_vif.AXI_ACLK) begin
         wait (axi_vif.AXI_WREADY);
          axi_vif.AXI_WDATA = axi_xfer.WDATA[i]; //wdata[size] expecting it to come from sequencce transaction 
