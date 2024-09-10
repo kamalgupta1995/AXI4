@@ -74,8 +74,8 @@
 
 
 `timescale 1ns/1ps
-`include "axi_constants.vh"
-
+`include "/home/vinay.c/Design/axi_slave/RTL/axi_constants.sv"
+//`include "./axi_constants.sv
 module axi4_dut 
    (
 
@@ -84,55 +84,55 @@ module axi4_dut
     input wire ARESETn,
 
     // Write Address Channel
-    input wire [ID_WIDTH-1:0] MEM_AWID,
-    input wire [ADDR_WIDTH-1:0] MEM_AWADDR,
-    input wire [LEN_WIDTH-1:0] MEM_AWLEN,
-    input wire [SIZE_WIDTH-1:0] MEM_AWSIZE,
-    input wire [BURST_WIDTH-1:0] MEM_AWBURST,
-    input wire [LOCK_WIDTH-1:0] MEM_AWLOCK,
-    input wire [CACHE_WIDTH-1:0] MEM_AWCACHE,
-    input wire [PROT_WIDTH-1:0] MEM_AWPROT,
-    input wire [QOS_WIDTH-1:0] MEM_AWQOS,
+    input wire [`ID_WIDTH-1:0] MEM_AWID,
+    input wire [`ADDR_WIDTH-1:0] MEM_AWADDR,
+    input wire [`LEN_WIDTH-1:0] MEM_AWLEN,
+    input wire [`SIZE_WIDTH-1:0] MEM_AWSIZE,
+    input wire [`BURST_WIDTH-1:0] MEM_AWBURST,
+    input wire [`LOCK_WIDTH-1:0] MEM_AWLOCK,
+    input wire [`CACHE_WIDTH-1:0] MEM_AWCACHE,
+    input wire [`PROT_WIDTH-1:0] MEM_AWPROT,
+    input wire [`QOS_WIDTH-1:0] MEM_AWQOS,
     input wire MEM_AWVALID,
     output reg MEM_AWREADY,
 
     // Write Data Channel
-    input wire [DATA_WIDTH-1:0] MEM_WDATA,
-    input wire [(DATA_WIDTH/8)-1:0] MEM_WSTRB,
+    input wire [`DATA_WIDTH-1:0] MEM_WDATA,
+    input wire [(`DATA_WIDTH/8)-1:0] MEM_WSTRB,
     input wire MEM_WLAST,
     input wire MEM_WVALID,
     output reg MEM_WREADY,
 
     // Write Response Channel
-    output wire [ID_WIDTH-1:0] MEM_BID,
-    output wire [RESP_WIDTH-1:0] MEM_BRESP,
+    output wire [`ID_WIDTH-1:0] MEM_BID,
+    output wire [`RESP_WIDTH-1:0] MEM_BRESP,
     output reg MEM_BVALID,
     input wire MEM_BREADY,
 
     // Read Address Channel
-    input wire [ID_WIDTH-1:0] MEM_ARID,
-    input wire [ADDR_WIDTH-1:0] MEM_ARADDR,
-    input wire [LEN_WIDTH-1:0] MEM_ARLEN,
-    input wire [SIZE_WIDTH-1:0] MEM_ARSIZE,
-    input wire [BURST_WIDTH-1:0] MEM_ARBURST,
-    input wire [LOCK_WIDTH-1:0] MEM_ARLOCK,
-    input wire [CACHE_WIDTH-1:0] MEM_ARCACHE,
-    input wire [PROT_WIDTH-1:0] MEM_ARPROT,
-    input wire [QOS_WIDTH-1:0] MEM_ARQOS,
+    input wire [`ID_WIDTH-1:0] MEM_ARID,
+    input wire [`ADDR_WIDTH-1:0] MEM_ARADDR,
+    input wire [`LEN_WIDTH-1:0] MEM_ARLEN,
+    input wire [`SIZE_WIDTH-1:0] MEM_ARSIZE,
+    input wire [`BURST_WIDTH-1:0] MEM_ARBURST,
+    input wire [`LOCK_WIDTH-1:0] MEM_ARLOCK,
+    input wire [`CACHE_WIDTH-1:0] MEM_ARCACHE,
+    input wire [`PROT_WIDTH-1:0] MEM_ARPROT,
+    input wire [`QOS_WIDTH-1:0] MEM_ARQOS,
     input wire MEM_ARVALID,
     output reg MEM_ARREADY,
 
     // Read Data Channel
-    output wire [ID_WIDTH-1:0] MEM_RID,
-    output wire [DATA_WIDTH-1:0] MEM_RDATA,
-    output wire [RESP_WIDTH-1:0] MEM_RRESP,
+    output wire [`ID_WIDTH-1:0] MEM_RID,
+    output wire [`DATA_WIDTH-1:0] MEM_RDATA,
+    output wire [`RESP_WIDTH-1:0] MEM_RRESP,
     output wire MEM_RLAST,
     output reg MEM_RVALID,
     input wire MEM_RREADY
 );
 
 // Register bank
-reg [DATA_WIDTH-1:0] reg_bank [0:DEPTH-1];
+reg [`DATA_WIDTH-1:0] reg_bank [0:`DEPTH-1];
   
 // FIFO signals
 wire	aw_push;
@@ -156,24 +156,24 @@ wire	r_fifo_empty;
 wire	b_fifo_full;
 wire	b_fifo_empty;
 
-wire [AW_FIFO_WIDTH-1:0] aw_fifo_wdata;
-wire [AW_FIFO_WIDTH-1:0] aw_fifo_rdata;
-wire [AR_FIFO_WIDTH-1:0] ar_fifo_wdata;
-wire [AR_FIFO_WIDTH-1:0] ar_fifo_rdata;
-wire [W_FIFO_WIDTH-1:0]  w_fifo_wdata;
-wire [W_FIFO_WIDTH-1:0]  w_fifo_rdata;
-wire [R_FIFO_WIDTH-1:0]  r_fifo_rdata;
-wire [B_FIFO_WIDTH-1:0]  b_fifo_wdata;
-wire [B_FIFO_WIDTH-1:0]  b_fifo_rdata;
+wire [`AW_FIFO_WIDTH-1:0] aw_fifo_wdata;
+wire [`AW_FIFO_WIDTH-1:0] aw_fifo_rdata;
+wire [`AR_FIFO_WIDTH-1:0] ar_fifo_wdata;
+wire [`AR_FIFO_WIDTH-1:0] ar_fifo_rdata;
+wire [`W_FIFO_WIDTH-1:0]  w_fifo_wdata;
+wire [`W_FIFO_WIDTH-1:0]  w_fifo_rdata;
+wire [`R_FIFO_WIDTH-1:0]  r_fifo_rdata;
+wire [`B_FIFO_WIDTH-1:0]  b_fifo_wdata;
+wire [`B_FIFO_WIDTH-1:0]  b_fifo_rdata;
 
-reg [R_FIFO_WIDTH-1:0] r_fifo_wdata;
+reg [`R_FIFO_WIDTH-1:0] r_fifo_wdata;
 
 // Intermediate register for BRESP
-reg [RESP_WIDTH-1:0] bresp_int;  
+reg [`RESP_WIDTH-1:0] bresp_int;  
 
 // AW FIFO
 axi_fifo #(
-    .WIDTH(AW_FIFO_WIDTH),
+    .WIDTH(`AW_FIFO_WIDTH),
     .DEPTH(16),
     .PTR_WIDTH(4)
 ) aw_fifo (
@@ -195,7 +195,7 @@ assign aw_fifo_wdata = {MEM_AWID, MEM_AWADDR, MEM_AWLEN, {{1'b0}, MEM_AWSIZE}, {
 
 // W FIFO
 axi_fifo #(
-    .WIDTH(W_FIFO_WIDTH),
+    .WIDTH(`W_FIFO_WIDTH),
     .DEPTH(16),
     .PTR_WIDTH(4)
 ) w_fifo (
@@ -217,7 +217,7 @@ assign w_fifo_wdata = {MEM_WLAST, MEM_WSTRB, MEM_WDATA};
   
 // B FIFO
 axi_fifo #(
-    .WIDTH(B_FIFO_WIDTH),
+    .WIDTH(`B_FIFO_WIDTH),
     .DEPTH(16),
     .PTR_WIDTH(4)
 ) b_fifo (
@@ -235,13 +235,13 @@ axi_fifo #(
 assign b_push = w_pop && !b_fifo_full && aw_pop;
 assign b_pop = MEM_BREADY && MEM_BVALID;
 assign MEM_BVALID = !b_fifo_empty;
-assign MEM_BID = b_fifo_rdata[B_FIFO_WIDTH-1:B_FIFO_WIDTH-ID_WIDTH];
-assign MEM_BRESP = b_fifo_rdata[B_FIFO_WIDTH-ID_WIDTH-1:0];
-assign b_fifo_wdata = {aw_fifo_rdata[AW_FIFO_WIDTH-1:AW_FIFO_WIDTH-ID_WIDTH], bresp_int};
+assign MEM_BID = b_fifo_rdata[`B_FIFO_WIDTH-1:`B_FIFO_WIDTH-`ID_WIDTH];
+assign MEM_BRESP = b_fifo_rdata[`B_FIFO_WIDTH-`ID_WIDTH-1:0];
+assign b_fifo_wdata = {aw_fifo_rdata[`AW_FIFO_WIDTH-1:`AW_FIFO_WIDTH-`ID_WIDTH], bresp_int};
   
 // AR FIFO
 axi_fifo #(
-    .WIDTH(AR_FIFO_WIDTH),
+    .WIDTH(`AR_FIFO_WIDTH),
     .DEPTH(16),
     .PTR_WIDTH(4)
 ) ar_fifo (
@@ -263,7 +263,7 @@ assign ar_fifo_wdata = {MEM_ARID, MEM_ARADDR, MEM_ARLEN, {{1'b0}, MEM_ARSIZE}, {
   
 // R FIFO
 axi_fifo #(
-    .WIDTH(R_FIFO_WIDTH),
+    .WIDTH(`R_FIFO_WIDTH),
     .DEPTH(16),
     .PTR_WIDTH(4)
 ) r_fifo (
@@ -281,25 +281,25 @@ axi_fifo #(
 assign r_push = ar_pop && !r_fifo_full;
 assign r_pop = MEM_RREADY && MEM_RVALID;
 assign MEM_RVALID = !r_fifo_empty;
-assign MEM_RID = r_fifo_rdata[R_FIFO_WIDTH-1:2+RESP_WIDTH+DATA_WIDTH];
-assign MEM_RDATA = r_fifo_rdata[DATA_WIDTH-1:0];
-assign MEM_RRESP = r_fifo_rdata[2+RESP_WIDTH+DATA_WIDTH-1:DATA_WIDTH];
+assign MEM_RID = r_fifo_rdata[`R_FIFO_WIDTH-1:2+`RESP_WIDTH+`DATA_WIDTH];
+assign MEM_RDATA = r_fifo_rdata[`DATA_WIDTH-1:0];
+assign MEM_RRESP = r_fifo_rdata[2+`RESP_WIDTH+`DATA_WIDTH-1:`DATA_WIDTH];
 assign MEM_RLAST = 1'b1;
 
 // Address decoding and data writing
 always @(posedge ACLK or negedge ARESETn) begin
     if (!ARESETn) begin
         integer i;
-        for (i = 0; i < DEPTH; i = i + 1) begin
-            reg_bank[i] <= {DATA_WIDTH{1'b0}};
+        for (i = 0; i < `DEPTH; i = i + 1) begin
+            reg_bank[i] <= {`DATA_WIDTH{1'b0}};
         end
         bresp_int <= 2'b00;
     end else begin
         if (aw_pop && w_pop) begin
             // Check if the address is within the valid range
-            if (aw_fifo_rdata[AW_FIFO_WIDTH-5:32] >= START_ADDR && aw_fifo_rdata[AW_FIFO_WIDTH-5:32] <= END_ADDR) begin
+            if (aw_fifo_rdata[`AW_FIFO_WIDTH-5:32] >= `START_ADDR && aw_fifo_rdata[`AW_FIFO_WIDTH-5:32] <= `END_ADDR) begin
                 // Calculate the index in the register bank
-                reg_bank[aw_fifo_rdata[AW_FIFO_WIDTH-5:32]] <= w_fifo_rdata[DATA_WIDTH-1:0];
+                reg_bank[aw_fifo_rdata[`AW_FIFO_WIDTH-5:32]] <= w_fifo_rdata[`DATA_WIDTH-1:0];
             end
         end
     end
@@ -308,7 +308,7 @@ end
 always @(*) begin
     if (aw_pop && w_pop) begin
         // Check if the address is within the valid range
-        if (aw_fifo_rdata[AW_FIFO_WIDTH-5:32] >= START_ADDR && aw_fifo_rdata[AW_FIFO_WIDTH-5:32] <= END_ADDR) begin
+        if (aw_fifo_rdata[`AW_FIFO_WIDTH-5:32] >= `START_ADDR && aw_fifo_rdata[`AW_FIFO_WIDTH-5:32] <= `END_ADDR) begin
             // Calculate the index in the register bank
             bresp_int <= 2'b00; // OKAY response
         end else begin
@@ -320,15 +320,15 @@ end
 // Logic to read from register bank and push into R FIFO
 always @(*) begin
     if (!ARESETn) begin
-        r_fifo_wdata <= {R_FIFO_WIDTH{1'b0}};
+        r_fifo_wdata <= {`R_FIFO_WIDTH{1'b0}};
     end else begin
         if (ar_pop) begin
             // Check if the address is within the valid range
-            if (ar_fifo_rdata[AR_FIFO_WIDTH-5:32] >= START_ADDR && ar_fifo_rdata[AR_FIFO_WIDTH-5:32] <= END_ADDR) begin
+            if (ar_fifo_rdata[`AR_FIFO_WIDTH-5:32] >= `START_ADDR && ar_fifo_rdata[`AR_FIFO_WIDTH-5:32] <= `END_ADDR) begin
                 // Calculate the index in the register bank and read data
-                r_fifo_wdata <= {ar_fifo_rdata[AR_FIFO_WIDTH-1:AR_FIFO_WIDTH-ID_WIDTH], {{2'b00}, 2'b00}, reg_bank[ar_fifo_rdata[AR_FIFO_WIDTH-5:32]]};
+                r_fifo_wdata <= {ar_fifo_rdata[`AR_FIFO_WIDTH-1:`AR_FIFO_WIDTH-`ID_WIDTH], {{2'b00}, 2'b00}, reg_bank[ar_fifo_rdata[`AR_FIFO_WIDTH-5:32]]};
             end else begin
-                r_fifo_wdata <= {ar_fifo_rdata[AR_FIFO_WIDTH-1:AR_FIFO_WIDTH-ID_WIDTH], {{2'b00}, 2'b11}, reg_bank[ar_fifo_rdata[AR_FIFO_WIDTH-5:32]]}; // DECERR response
+                r_fifo_wdata <= {ar_fifo_rdata[`AR_FIFO_WIDTH-1:`AR_FIFO_WIDTH-`ID_WIDTH], {{2'b00}, 2'b11}, reg_bank[ar_fifo_rdata[`AR_FIFO_WIDTH-5:32]]}; // DECERR response
             end
         end
     end
