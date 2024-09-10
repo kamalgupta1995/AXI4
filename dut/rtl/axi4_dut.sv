@@ -74,8 +74,7 @@
 
 
 `timescale 1ns/1ps
-`include "/home/vinay.c/Design/axi_slave/RTL/axi_constants.sv"
-//`include "./axi_constants.sv
+`include "./axi_constants.vh"
 module axi4_dut 
    (
 
