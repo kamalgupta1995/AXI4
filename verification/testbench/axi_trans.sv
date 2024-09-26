@@ -35,7 +35,13 @@ class axi_trans extends uvm_sequence_item;
   rand axi_cache_type arcache;
   rand axi_lock_type arlock;
   rand axi_prot_type arprot;
-  rand bit [`DATA_WIDTH-1:0] RDATA [];      
+  rand bit [`DATA_WIDTH-1:0] RDATA [];  
+
+
+   logic     [3:0] BID;
+  logic   [1:0] BRESP;
+  bit      BVALID;
+  bit      BREADY ;
   
   
   
