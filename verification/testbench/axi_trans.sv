@@ -40,7 +40,7 @@ class axi_trans extends uvm_sequence_item;
   
   
   // Constarints 
-  // constraint c_wstrb{wstrb == 32'h0000_000F;}    
+   constraint c_wstrb{wstrb == 32'hFFFF_FFFF;}    
     constraint ID_W { AWID==WID;}
   constraint ID_R { ARID==RID;} 
   
@@ -48,11 +48,14 @@ class axi_trans extends uvm_sequence_item;
   constraint arburst_val {if (/*ARBURST*/arburst==2'b10) {ARLEN inside {1,3,7,15};}} 
     constraint awburst_val {if (/*AWBURST*/awburst==2'b10) {AWLEN inside {1,3,7,15};}} 
         
-    //  constraint wdata_size { WDATA.size() == (2**AWSIZE); }   // 256 size
-      constraint wdata_size { WDATA.size() == AWLEN +1; } 
+      constraint wdata_size { WDATA.size() == (2**AWSIZE); }   // 256 size
+     // constraint wdata_size { WDATA.size() == AWLEN +1; } 
+
     constraint rdata_size { RDATA.size() == (2**ARSIZE); } 
     constraint c_size{soft AWSIZE == 5;} 
       constraint R_size{soft ARSIZE == AWSIZE;} 
+      constraint W_len {soft AWLEN == 0;}
+      
       //write
       constraint  W_lock_type { soft awlock == 2'h0;}
       constraint  W_prot_type { soft awprot == 3'h2;}
