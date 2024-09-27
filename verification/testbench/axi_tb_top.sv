@@ -2,8 +2,8 @@
 
 module axi_tb_top;
 
-    //import uvm_pkg::*;
-    //`include "uvm_macros.svh" 
+    import uvm_pkg::*;
+    `include "uvm_macros.svh" 
 
     bit ACLK=0;
     bit ARESETn=1;
@@ -16,8 +16,8 @@ module axi_tb_top;
            .STRB_WIDTH    (`DATA_WIDTH/8)
             ) axi_if_master0 (ACLK, ARESETn);    
     
-    // Instantiate the DUT
-    axi4_dut dut (
+    // Instantiate the slave DUT
+    axi4_dut slave_dut (
         .ACLK(ACLK),
         .ARESETn(ARESETn),
         .MEM_AWID(axi_if_master0.AXI_AWID),
