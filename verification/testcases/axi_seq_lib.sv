@@ -1,4 +1,4 @@
-/*
+
 class axi_Rsequence extends uvm_sequence#(axi_trans);
  
   `uvm_object_utils(axi_Rsequence)
@@ -15,7 +15,7 @@ class axi_Rsequence extends uvm_sequence#(axi_trans);
    // repeat(5)
       begin
        
-        req=axi_trans)::type_id::create("req");
+        req=axi_trans::type_id::create("req");
        start_item(req);
         assert(req.randomize () with {req.tr_cmd == AXI_READ;});
         // `uvm_do_with(req,{req.addr == 48'h0000_0000_0000;req.tr_cmd == AXI_READ; req.id == 0;})
@@ -23,7 +23,7 @@ class axi_Rsequence extends uvm_sequence#(axi_trans);
       end    
   endtask  
 endclass
- */
+
 //////////////////////////////////////////////////////////////
 //////////////  multiple ---unaligned single transfer//////////////////////
 //////////////////////////////////////////////////////////////
