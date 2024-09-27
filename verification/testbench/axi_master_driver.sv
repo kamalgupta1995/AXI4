@@ -8,7 +8,7 @@ class axi_master_driver extends uvm_driver#(axi_trans);
 
    `uvm_component_utils(axi_master_driver)
 
-    virtual axi_if axi_vif;
+    virtual axi_if#(`ID_WIDTH,`ADDR_WIDTH,`LEN_WIDTH,`DATA_WIDTH,(`DATA_WIDTH/8)) axi_vif;
  
     uvm_analysis_port#(axi_trans) master_agent_ap;
 
@@ -28,21 +28,11 @@ class axi_master_driver extends uvm_driver#(axi_trans);
     endfunction //new
 
     function void build_phase(uvm_phase phase);
-      //if(! uvm_config_db#(virtual axi_if#(ID_WIDTH,ADDR_WIDTH,LEN_WIDTH,DATA_WIDTH,STRB_WIDTH))::get(this, "", "axi_vif", axi_vif)) 
-      if(! uvm_config_db#(virtual axi_if)::get(this, "", "axi_vif", axi_vif)) 
+      if(! uvm_config_db#(virtual axi_if#(`ID_WIDTH,`ADDR_WIDTH,`LEN_WIDTH,`DATA_WIDTH,(`DATA_WIDTH/8)))::get(this, "", "axi_vif", axi_vif)) 
         `uvm_fatal("AXI_MASTR_DRV", "Cannot get VIF from configuration database!")
         super.build_phase(phase);
     endfunction //build_phase
-  	//CONFIG_DB was missing
-//       function void build_phase(uvm_phase phase);
 //           axi_xfer = axi_trans::type_id::create("axi_xfer");  
-
-//          if(! uvm_config_db#(virtual axi_if#(ID_WIDTH,ADDR_WIDTH,LEN_WIDTH,DATA_WIDTH,STRB_WIDTH))::get(this, "", "axi_vif", axi_vif)) begin
-//               `uvm_fatal("AXI_SLV_DRV", "Cannot get VIF from configuration database!")
-//          end
-//          super.build_phase(phase);
-
-//       endfunction //build_phase
 
     //-------------------------------------
     task run_phase(uvm_phase phase);
