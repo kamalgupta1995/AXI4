@@ -2,22 +2,22 @@ class axi_base_test extends uvm_test;
     `uvm_component_utils(axi_base_test)
     
     axi_env env;
-    axi_write_seq#(.WIDTH(WIDTH), .SIZE(SIZE)) wr_seq;
-    axi_read_seq#(.WIDTH(WIDTH), .SIZE(SIZE)) rd_seq;
+    axi_Wsequence wr_seq;
+    axi_Rsequence rd_seq;
 
-    env_config env_cfg;
-    test_config test_cfg;
+    //env_config env_cfg;
+    //test_config test_cfg;
 
     function new(string name, uvm_component parent);
         super.new(name, parent);
-        test_cfg = new("test_cfg");
-        test_cfg.no_write_cases = 20;
-        test_cfg.no_read_cases = 20;
+        //test_cfg = new("test_cfg");
+        //test_cfg.no_write_cases = 20;
+        //test_cfg.no_read_cases = 20;
     endfunction //new()
 
     function void build_phase(uvm_phase phase);
-		test_cfg.burst_type = -1;
-		uvm_config_db#(test_config)::set(null, "uvm_test_top.seq", "config", test_cfg);
+		//test_cfg.burst_type = -1;
+		//uvm_config_db#(test_config)::set(null, "uvm_test_top.seq", "config", test_cfg);
 		
 		wr_seq = new("wr_seq");
 		rd_seq = new("rd_seq");
@@ -32,10 +32,10 @@ class axi_base_test extends uvm_test;
     task run_phase(uvm_phase phase);
         phase.raise_objection(this);
 		fork
-			wr_seq.start(env.master.w_seqr);
+			wr_seq.start(env.master.seqrh); //w_seqr);
 			begin
 				#200;
-				rd_seq.start(env.master.r_seqr);
+				rd_seq.start(env.master.seqrh); //r_seqr);
 			end
 		join
 		phase.drop_objection(this);
@@ -60,7 +60,7 @@ class axi_write_test extends axi_base_test;
     
     task run_phase(uvm_phase phase);
         phase.raise_objection(this);
-        wr_seq.start(env.master.w_seqr);
+        wr_seq.start(env.master.seqrh); //w_seqr);
         phase.drop_objection(this);
     endtask: run_phase
 endclass //write_test 
@@ -82,8 +82,8 @@ class axi_read_test extends axi_base_test;
     
     task run_phase(uvm_phase phase);
         phase.raise_objection(this);
-        wr_seq.start(env.master.w_seqr);
-        rd_seq.start(env.master.r_seqr);
+        wr_seq.start(env.master.seqrh); //w_seqr);
+        rd_seq.start(env.master.seqrh); //r_seqr);
         phase.drop_objection(this);
     endtask: run_phase
 endclass //write_test 
@@ -96,8 +96,8 @@ class axi_fixed_test extends axi_base_test;
     endfunction
 
     function void build_phase(uvm_phase phase);
-        test_cfg.burst_type = 0;
-        uvm_config_db#(test_config)::set(null, "uvm_test_top.seq", "config", test_cfg);
+        //test_cfg.burst_type = 0;
+        //uvm_config_db#(test_config)::set(null, "uvm_test_top.seq", "config", test_cfg);
         
         wr_seq = new("wr_seq");
         rd_seq = new("rd_seq");
@@ -117,8 +117,8 @@ class axi_incr_test extends axi_base_test;
     endfunction
 
     function void build_phase(uvm_phase phase);
-        test_cfg.burst_type = 1;
-        uvm_config_db#(test_config)::set(null, "uvm_test_top.seq", "config", test_cfg);
+        //test_cfg.burst_type = 1;
+        //uvm_config_db#(test_config)::set(null, "uvm_test_top.seq", "config", test_cfg);
         
         wr_seq = new("wr_seq");
         rd_seq = new("rd_seq");
@@ -138,8 +138,8 @@ class axi_wrap_test extends axi_base_test;
     endfunction
 
     function void build_phase(uvm_phase phase);
-        test_cfg.burst_type = 2;
-        uvm_config_db#(test_config)::set(null, "uvm_test_top.seq", "config", test_cfg);
+        //test_cfg.burst_type = 2;
+        //uvm_config_db#(test_config)::set(null, "uvm_test_top.seq", "config", test_cfg);
         
         wr_seq = new("wr_seq");
         rd_seq = new("rd_seq");
