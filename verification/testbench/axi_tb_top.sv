@@ -77,11 +77,11 @@ module axi_tb_top;
 
     // Set config_db for Interface and run_test method
     initial begin
-	uvm_config_db#(virtual axi_if)::set(null, "*", "axi_vif", axi_if_master0);
-      	run_test("axi_sanity_test");
+	uvm_config_db#(virtual axi_if#(`ID_WIDTH,`ADDR_WIDTH,`LEN_WIDTH,`DATA_WIDTH,(`DATA_WIDTH/8)))::set(null, "*", "axi_vif", axi_if_master0);
+      	run_test("");
     end
 
-    //initial #10000 $finish;
+    initial #50000 $finish;
 
     // Waveform dump (edapg)
   /*  initial begin
