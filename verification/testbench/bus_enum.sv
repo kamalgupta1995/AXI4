@@ -3,6 +3,8 @@
 // File Name: bus_enum.sv
 //----------------------------------------------
 
+`include "uvm_macros.svh" 
+import uvm_pkg::*;
 
 typedef enum
 {
