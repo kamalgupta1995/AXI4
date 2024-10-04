@@ -18,5 +18,6 @@
     `define R_FIFO_WIDTH  ( `DATA_WIDTH + `RESP_WIDTH + `ID_WIDTH + 2 )
     `define B_FIFO_WIDTH  (`RESP_WIDTH + `ID_WIDTH )
     `define START_ADDR  32'h00000000 
-    `define END_ADDR  32'h000003FF 
+    `define END_ADDR  32'h000003FF
+    `define REG_BANK_WIDTH `DATA_WIDTH*16 
 	
