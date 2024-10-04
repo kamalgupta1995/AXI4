@@ -5,7 +5,7 @@
 // File   : axi_master module
 
 `timescale 1ns/1ps
-`include "/home/vinay.c/Design/axi_slave/RTL/axi_constants.vh"
+`include "axi_config.sv"
 module axi_master 
      (
      //Global signals
