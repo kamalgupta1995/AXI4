@@ -22,7 +22,7 @@ class axi_trans extends uvm_sequence_item;
   rand axi_cache_type awcache;
   rand axi_lock_type awlock;
   rand axi_prot_type awprot;
-  rand bit  [3:0] wstrb; 
+  rand bit  [31:0] wstrb; 
   rand bit [`DATA_WIDTH-1:0] WDATA[];
   
  //read Channel Signals
@@ -36,11 +36,15 @@ class axi_trans extends uvm_sequence_item;
   rand axi_lock_type arlock;
   rand axi_prot_type arprot;
   rand bit [`DATA_WIDTH-1:0] RDATA [];  
-
+  
+  
   logic     [3:0] BID;
-  logic   [1:0] BRESP;
-  bit      BVALID;
-  bit      BREADY ;
+  logic          [1:0] BRESP;
+  logic          [1:0] RRESP; // need clarity on this
+  logic                BVALID;
+  logic                BREADY;
+  
+  
   
   // Constarints 
    constraint c_wstrb{wstrb == 32'hFFFF_FFFF;}    
@@ -51,14 +55,11 @@ class axi_trans extends uvm_sequence_item;
   constraint arburst_val {if (/*ARBURST*/arburst==2'b10) {ARLEN inside {1,3,7,15};}} 
     constraint awburst_val {if (/*AWBURST*/awburst==2'b10) {AWLEN inside {1,3,7,15};}} 
         
-      constraint wdata_size { WDATA.size() == (2**AWSIZE); }   // 256 size
-     // constraint wdata_size { WDATA.size() == AWLEN +1; } 
-
+    //  constraint wdata_size { WDATA.size() == (2**AWSIZE); }   // 256 size
+      constraint wdata_size { WDATA.size() == AWLEN +1; } 
     constraint rdata_size { RDATA.size() == (2**ARSIZE); } 
     constraint c_size{soft AWSIZE == 5;} 
       constraint R_size{soft ARSIZE == AWSIZE;} 
-      constraint W_len {soft AWLEN == 0;}
-      
       //write
       constraint  W_lock_type { soft awlock == 2'h0;}
       constraint  W_prot_type { soft awprot == 3'h2;}
@@ -72,7 +73,7 @@ class axi_trans extends uvm_sequence_item;
     virtual function void do_print(uvm_printer printer);  
         super.do_print(printer); 
         printer.print_string("tr_cmd", tr_cmd.name);
-        //printer.print_field_int("AWADDR", AWADDR, $bits(AWADDR), UVM_HEX);
+       // printer.print_field_int("AWADDR", AWADDR, $bits(AWADDR), UVM_HEX);
         //printer.print_field_int("AWLEN", AWLEN, $bits(AWLEN), UVM_HEX);
         //printer.print_field_int("AWSIZE",AWLEN,$bits(AWSIZE),UVM_HEX);
         printer.print_string("awburst", awburst.name);
@@ -91,3 +92,4 @@ class axi_trans extends uvm_sequence_item;
   
 endclass:axi_trans
   
+
