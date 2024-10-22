@@ -4,19 +4,12 @@
 //----------------------------------------------------
 `timescale 1ns/1ns
 
-interface axi_if #(
-  parameter int ID_WIDTH     = 10,
-  parameter int ADDR_WIDTH   = 48,
-  parameter int LEN_WIDTH    = 8,
-  parameter int DATA_WIDTH   = 32,
-  parameter int STRB_WIDTH   = DATA_WIDTH/8 
-  )
-  (input AXI_ACLK, input AXI_ARESETn);
+interface axi_if  (input AXI_ACLK, input AXI_ARESETn);
 
-  parameter int ID_MAX     = ID_WIDTH     - 1;
-  parameter int ADDR_MAX   = ADDR_WIDTH   - 1;
-  parameter int DATA_MAX   = DATA_WIDTH   - 1;
-  parameter int STRB_MAX   = STRB_WIDTH   - 1;
+  parameter int ID_MAX     = `ID_WIDTH     - 1;
+  parameter int ADDR_MAX   = `ADDR_WIDTH   - 1;
+  parameter int DATA_MAX   = `DATA_WIDTH   - 1;
+  parameter int STRB_MAX   = `STRB_WIDTH   - 1;
 
   // Write Address Channel
   logic      [ID_MAX:0] AXI_AWID;
@@ -24,9 +17,9 @@ interface axi_if #(
   logic [LEN_WIDTH-1:0] AXI_AWLEN;
   logic           [2:0] AXI_AWSIZE;
   logic           [1:0] AXI_AWBURST;
+  logic                 AXI_AWLOCK;
   logic           [3:0] AXI_AWCACHE;
   logic           [2:0] AXI_AWPROT;
-  logic                 AXI_AWLOCK;
   logic                 AXI_AWVALID;
   logic                 AXI_AWREADY;
 
@@ -66,6 +59,13 @@ interface axi_if #(
   logic                AXI_RLAST;
   logic                AXI_RVALID;
   logic                AXI_RREADY;
+ 
+  logic         [3:0] AXI_AWQOS;
+  logic         [3:0] AXI_ARQOS;
+
+
+  //logic AXI_ACLK;
+  //logic AXI_ARESETn;
 
 /*
   // AXI4 Addition
