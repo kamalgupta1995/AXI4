@@ -1,12 +1,14 @@
 
-
-
-`timescale 1ns/1ns
-
 module axi_tb_top;
 
-    //import uvm_pkg::*;
-    //`include "uvm_macros.svh" 
+    import uvm_pkg::*;
+    `include "uvm_macros.svh" 
+
+    
+    import axi_pkg::*;   
+    import axi_test_pkg::*;
+
+
 
     bit ACLK=0;
     bit ARESETn=1;
