@@ -2,7 +2,7 @@
 // AXI Interface
 // File Name: axi_if.sv
 //----------------------------------------------------
-`timescale 1ns/1ns
+//`timescale 1ns/1ns
 
 interface axi_if #(
   parameter int ID_WIDTH     = 4,
