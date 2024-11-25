@@ -22,7 +22,7 @@ class axi_trans extends uvm_sequence_item;
   rand axi_cache_type awcache;
   rand axi_lock_type awlock;
   rand axi_prot_type awprot;
-  rand bit  [3:0] wstrb; 
+  rand bit  [31:0] wstrb; 
   rand bit [7:0] WDATA[][];
   
  //read Channel Signals
@@ -47,7 +47,7 @@ class axi_trans extends uvm_sequence_item;
   
   
   // Constarints 
-  // constraint c_wstrb{wstrb == 32'h0000_000F;}    
+   constraint c_wstrb{wstrb == 32'hFFFF_FFFF;}    
     constraint ID_W { AWID==WID;}
   constraint ID_R { ARID==RID;} 
   
@@ -61,7 +61,8 @@ class axi_trans extends uvm_sequence_item;
                                
 //                                 } 
     
-      constraint size_value { 8*(2** AWSIZE) <= `DATA_WIDTH ;}                           
+      constraint size_value { 8*(2** AWSIZE) == `DATA_WIDTH ;}  
+        constraint size_value { 8*(2** ARSIZE) == `DATA_WIDTH ;}     
         constraint wdata_size {
         /*  solve order constraints  */
         solve AWLEN before WDATA;
@@ -102,16 +103,16 @@ class axi_trans extends uvm_sequence_item;
     virtual function void do_print(uvm_printer printer);  
         super.do_print(printer); 
         printer.print_string("tr_cmd", tr_cmd.name);
-        printer.print_field_int("AWADDR", AWADDR, $bits(AWADDR), UVM_HEX);
-        printer.print_field_int("AWLEN", AWLEN, $bits(AWLEN), UVM_HEX);
-        printer.print_field_int("AWSIZE",AWLEN,$bits(AWSIZE),UVM_HEX);                    
+        printer.print_field("AWADDR", AWADDR, $bits(AWADDR));
+        printer.print_field("AWLEN", AWLEN, $bits(AWLEN));
+        printer.print_field("AWSIZE",AWLEN,$bits(AWSIZE));                    
         printer.print_string("awburst", awburst.name);
         printer.print_string("awcache", awcache.name);
         printer.print_string("awlock", awlock.name);
         printer.print_string("awprot", awprot.name);
-        printer.print_field_int("ARADDR", ARADDR, $bits(ARADDR), UVM_HEX);
-        printer.print_field_int("ARLEN", ARLEN, $bits(ARLEN), UVM_HEX);
-        printer.print_field_int("ARSIZE",ARLEN,$bits(ARSIZE),UVM_HEX);
+        printer.print_field("ARADDR", ARADDR, $bits(ARADDR));
+        printer.print_field("ARLEN", ARLEN, $bits(ARLEN));
+        printer.print_field("ARSIZE",ARLEN,$bits(ARSIZE));
         printer.print_string("arburst", arburst.name);
         printer.print_string("arcache", arcache.name);
         printer.print_string("arlock", arlock.name);
