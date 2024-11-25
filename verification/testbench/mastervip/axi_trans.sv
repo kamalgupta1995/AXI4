@@ -62,7 +62,7 @@ class axi_trans extends uvm_sequence_item;
 //                                 } 
     
       constraint size_value { 8*(2** AWSIZE) == `DATA_WIDTH ;}  
-        constraint size_value { 8*(2** ARSIZE) == `DATA_WIDTH ;}     
+        constraint R_size_value { 8*(2** ARSIZE) == `DATA_WIDTH ;}     
         constraint wdata_size {
         /*  solve order constraints  */
         solve AWLEN before WDATA;
