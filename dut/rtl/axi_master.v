@@ -165,7 +165,7 @@ module axi_master
                            if(awvalid && awready)
                               begin
                                  wr_next_state = WR_DATA ;
-                                 awvalid    = 1'b0;
+                                 //awvalid    = 1'b0;
                                  wvalid     = 1'b1; 
                               end
                            else
