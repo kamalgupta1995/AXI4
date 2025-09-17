@@ -213,15 +213,17 @@ class axi_master_driver extends uvm_driver#(axi_trans);
      foreach ( axi_xfer.WDATA[i,j] ) begin
        wr_data[i][8*j+:8] = axi_xfer.WDATA[i][j];
     end
-     
+     // @(posedge axi_vif.AXI_ACLK)
+         axi_vif.AXI_WVALID= 1'b1;
      
      for(int i=0; i< axi_xfer.AWLEN+1; i++) begin
       // `uvm_info("WR_DATA",$sformatf(" Data[%0h] = %0p",i,wr_data[i]),UVM_LOW)
-       @(posedge axi_vif.AXI_ACLK) begin
-       // wait (axi_vif.AXI_WREADY);
+       @(posedge axi_vif.AXI_ACLK)
+       begin
+        wait (axi_vif.AXI_WREADY);
          axi_vif.AXI_WDATA = wr_data[i]; //wdata[size] expecting it to come from sequencce transaction 
          axi_vif.AXI_WLAST = (i == axi_xfer.AWLEN)? 1:0;
-       	axi_vif.AXI_WVALID= 1'b1;
+       	
         axi_vif.AXI_WID   = axi_xfer.WID; 
        end  
        `uvm_info("WR_DATA",$sformatf(" Data[%0h] = %0h",i,axi_vif.AXI_WDATA),UVM_LOW)
@@ -324,8 +326,5 @@ class axi_master_driver extends uvm_driver#(axi_trans);
    
    
 endclass //axi_master_driver
-
-
-
 
 

@@ -4,12 +4,19 @@
 //----------------------------------------------------
 `timescale 1ns/1ns
 
-interface axi_if  (input AXI_ACLK, input AXI_ARESETn);
+interface axi_if #(
+  parameter int ID_WIDTH     = 4,
+  parameter int ADDR_WIDTH   = 32,
+  parameter int LEN_WIDTH    = 8,
+  parameter int DATA_WIDTH   = 256,
+  parameter int STRB_WIDTH   = `DATA_WIDTH/8 
+  )
+  (input AXI_ACLK, input AXI_ARESETn);
 
-  parameter int ID_MAX     = `ID_WIDTH     - 1;
-  parameter int ADDR_MAX   = `ADDR_WIDTH   - 1;
-  parameter int DATA_MAX   = `DATA_WIDTH   - 1;
-  parameter int STRB_MAX   = `STRB_WIDTH   - 1;
+  parameter int ID_MAX     = ID_WIDTH     - 1;
+  parameter int ADDR_MAX   = ADDR_WIDTH   - 1;
+  parameter int DATA_MAX   = DATA_WIDTH   - 1;
+  parameter int STRB_MAX   = STRB_WIDTH   - 1;
 
   // Write Address Channel
   logic      [ID_MAX:0] AXI_AWID;
@@ -26,7 +33,7 @@ interface axi_if  (input AXI_ACLK, input AXI_ARESETn);
 
   // Write Data Channel
   logic     [ID_MAX:0] AXI_WID;
-  logic   [DATA_MAX:0] AXI_WDATA;
+  logic   [255:0] AXI_WDATA;
   logic   [STRB_MAX:0] AXI_WSTRB;
   logic                AXI_WLAST;
   logic                AXI_WVALID;
@@ -54,7 +61,7 @@ interface axi_if  (input AXI_ACLK, input AXI_ARESETn);
 
   // Read Data Channel
   logic     [ID_MAX:0] AXI_RID;
-  logic   [DATA_MAX:0] AXI_RDATA;
+  logic   [255:0] AXI_RDATA;
   logic          [1:0] AXI_RRESP;
   logic                AXI_RLAST;
   logic                AXI_RVALID;

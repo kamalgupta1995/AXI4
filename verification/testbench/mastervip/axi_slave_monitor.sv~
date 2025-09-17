@@ -49,7 +49,7 @@ task axi_slave_monitor::run_phase(uvm_phase phase);
   forever begin
     //run_mon(phase);
     w_tr = axi_trans::type_id::create("w_tr");
-     @(posedge axi_vif.AXI_ACLK)
+    @(axi_vif.AXI_ACLK);
     write_monitor();
     read_monitor();
   end
@@ -91,10 +91,7 @@ task axi_slave_monitor::write_monitor();
      
         // Monitor write data
         for (int i = 0; i <=  w_tr.AWLEN ; i++) begin
-             @(posedge axi_vif.AXI_ACLK)
-         // @(posedge axi_vif.AXI_ACLK)
-          wait(axi_vif.AXI_WVALID && axi_vif.AXI_WREADY); 
-            @(posedge axi_vif.AXI_ACLK)
+          wait(axi_vif.AXI_WVALID && axi_vif.AXI_WREADY);
             w_tr.WDATA[i] = new [2**axi_vif.AXI_AWSIZE];
           for(int j=0; j < (2**axi_vif.AXI_AWSIZE) ; j++) begin 
             w_tr.WDATA[i][j] = axi_vif.AXI_WDATA >> (8*j);
@@ -102,7 +99,7 @@ task axi_slave_monitor::write_monitor();
           //wait (axi_vif.AXI_WREADY);
         end
         end
-    $display("------slave monitor DATA==%0p", w_tr.WDATA);
+    //$display("------slave monitor DATA==%0p", w_tr.WDATA);
    // $display("inside slave monitor");
    // w_tr.print();
     axi_slave_mon_ap.write(w_tr);

@@ -15,9 +15,9 @@ class axi_MWR_sequence extends uvm_sequence#(axi_trans);
       repeat(1)
       begin
         
-        `uvm_do_with(req,{req.AWADDR == 48'h0000_0000_0000;req.tr_cmd == AXI_WRITE; req.AWLEN == 0; req. awburst == 1'b0;})
+        `uvm_do_with(req,{req.AWADDR == 48'h0000_0000_0000;req.tr_cmd == AXI_WRITE; req.AWLEN == 3; req. awburst == 1'b0;})
         
-        `uvm_do_with(req,{req.ARADDR == 48'h0000_0000_0000;req.tr_cmd == AXI_READ; req.ARLEN == 0;req. arburst == 1'b0;})
+        `uvm_do_with(req,{req.ARADDR == 48'h0000_0000_0000;req.tr_cmd == AXI_READ; req.ARLEN == 3;req. arburst == 1'b0;})
       end
         
   endtask 
